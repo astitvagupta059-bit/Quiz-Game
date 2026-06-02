@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ultimate Quiz Challenge</title>
+<style>
+body{font-family:Arial,sans-serif;margin:0;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;display:flex;justify-content:center;align-items:center;min-height:100vh}
+.card{background:rgba(255,255,255,.12);backdrop-filter:blur(10px);padding:20px;border-radius:20px;width:90%;max-width:800px;text-align:center}
+button{width:100%;padding:12px;margin:8px 0;border:none;border-radius:10px;cursor:pointer;font-size:16px}
+#bar{height:18px;background:#ddd;border-radius:9px;overflow:hidden}
+#fill{height:100%;width:0%;background:#4caf50;transition:.5s}
+.dark{background:#111;color:#eee}
+.small{font-size:14px}
+</style>
+</head>
+<body>
+<div class="card" id="app"></div>
+
+<script>
+const levels=[
+{name:"Easy",time:15,questions:[
+["Capital of India?",["Mumbai","New Delhi","Chennai","Kolkata"],"New Delhi"],
+["2+8?",["8","10","12","14"],"10"],
+["National bird of India?",["Peacock","Crow","Parrot","Eagle"],"Peacock"],
+["Red Planet?",["Mars","Earth","Venus","Jupiter"],"Mars"],
+["Largest Ocean?",["Atlantic","Indian","Pacific","Arctic"],"Pacific"]
+]},
+{name:"Medium",time:12,questions:[
+["Java creator?",["James Gosling","Bill Gates","Jobs","Linus"],"James Gosling"],
+["Square root of 625?",["20","25","30","35"],"25"],
+["CPU stands for?",["Central Processing Unit","Core Power Unit","Computer Process Utility","None"],"Central Processing Unit"],
+["Atomic number of Hydrogen?",["1","2","3","8"],"1"],
+["Eiffel Tower is in?",["France","Italy","Germany","Spain"],"France"]
+]},
+{name:"Hard",time:10,questions:[
+["Speed of light?",["300,000 km/s","30,000 km/s","3,000 km/s","150,000 km/s"],"300,000 km/s"],
+["First moon walker?",["Neil Armstrong","Aldrin","Gagarin","Collins"],"Neil Armstrong"],
+["FIFO structure?",["Stack","Queue","Tree","Graph"],"Queue"],
+["Binary of 10?",["1010","1001","1111","1100"],"1010"],
+["Relativity proposed by?",["Einstein","Newton","Tesla","Bohr"],"Einstein"]
+]}
+];
+
+let level=0,q=0,score=0,streak=0,timeLeft=15,timer;
+
+function shuffle(a){return a.sort(()=>Math.random()-0.5)}
+levels.forEach(l=>shuffle(l.questions));
+
+function beep(f){
+try{
+const c=new (window.AudioContext||window.webkitAudioContext)();
+const o=c.createOscillator();o.frequency.value=f;o.connect(c.destination);o.start();o.stop(c.currentTime+.1);
+}catch(e){}
+}
+
+function renderQuestion(){
+const qs=levels[level].questions;
+if(q>=qs.length){return levelEnd();}
+
+const cur=qs[q];
+document.getElementById("app").innerHTML=`
+<h1>🏆 Ultimate Quiz Challenge</h1>
+<p>Level: ${levels[level].name}</p>
+<div id="bar"><div id="fill" style="width:${(q/qs.length)*100}%"></div></div>
+<p>⏳ <span id="t">${levels[level].time}</span>s | Score: ${score} | 🔥 Streak: ${streak}</p>
+<h2>${cur[0]}</h2>
+<div id="opts"></div>
+<button onclick="toggleDark()">🌙 Dark Mode</button>
+`;
+
+const opts=document.getElementById("opts");
+cur[1].forEach(o=>{
+const b=document.createElement("button");
+b.textContent=o;
+b.onclick=()=>answer(o);
+opts.appendChild(b);
+});
+
+timeLeft=levels[level].time;
+clearInterval(timer);
+timer=setInterval(()=>{
+timeLeft--;
+const t=document.getElementById("t");
+if(t) t.textContent=timeLeft;
+if(timeLeft<=0){clearInterval(timer);streak=0;nextQ();}
+},1000);
+}
+
+function answer(choice){
+clearInterval(timer);
+const ans=levels[level].questions[q][2];
+if(choice===ans){
+score++;
+streak++;
+if(streak===3){score+=2;}
+beep(800);
+}else{
+streak=0;
+beep(250);
+}
+nextQ();
+}
+
+function nextQ(){q++;renderQuestion();}
+
+function levelEnd(){
+if(level<levels.length-1){
+document.getElementById("app").innerHTML=`
+<h1>🎉 ${levels[level].name} Complete!</h1>
+<h2>Score: ${score}</h2>
+<button onclick="continueLevel()">➡ Continue</button>
+<button onclick="finishGame()">🏳 Give Up</button>`;
+}else{
+bossRound();
+}
+}
+
+function continueLevel(){
+level++;
+q=0;
+renderQuestion();
+}
+
+function bossRound(){
+document.getElementById("app").innerHTML=`
+<h1>🔥 BOSS ROUND 🔥</h1>
+<p>Bonus +5 points</p>
+<button onclick="score+=5;finishGame()">Finish Boss Round</button>`;
+}
+
+function finishGame(){
+let pct=Math.round(score/20*100);
+let rank=pct>=90?"👑 Quiz Legend":pct>=75?"🧠 Mastermind":pct>=50?"🎯 Challenger":"📚 Apprentice";
+
+let name=prompt("Enter your name")||"Player";
+let lb=JSON.parse(localStorage.getItem("quizlb")||"[]");
+lb.push({name,score});
+lb.sort((a,b)=>b.score-a.score);
+lb=lb.slice(0,10);
+localStorage.setItem("quizlb",JSON.stringify(lb));
+
+let board="<h3>🏆 Leaderboard</h3>";
+lb.forEach((p,i)=>board+=`<p>${i+1}. ${p.name} - ${p.score}</p>`);
+
+document.getElementById("app").innerHTML=`
+<h1>🎊 Game Finished</h1>
+<h2>${rank}</h2>
+<h2>Score: ${score}</h2>
+${board}
+<button onclick="location.reload()">Play Again</button>`;
+}
+
+function toggleDark(){
+document.body.classList.toggle("dark");
+}
+
+renderQuestion();
+</script>
+</body>
+</html>
