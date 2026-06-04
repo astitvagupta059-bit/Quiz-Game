@@ -20,17 +20,18 @@ button{width:100%;padding:12px;margin:8px 0;border:none;border-radius:10px;curso
 <script>
 const levels=[
 {name:"Easy",time:15,questions:[
-["Capital of India?",["Mumbai","New Delhi","Chennai","Kolkata"],"New Delhi"],
-["2+8?",["8","10","12","14"],"10"],
+["Current President of India",["Narendra Modi","Rahul Gandhi","Droupadi Murmu","Amit Shah"],"Droupadi Murmu"],
+["Square of 24 ?",["9002","1006","678","576"],"576"],
 ["National bird of India?",["Peacock","Crow","Parrot","Eagle"],"Peacock"],
-["Red Planet?",["Mars","Earth","Venus","Jupiter"],"Mars"],
+["Dwarf Planet?",["Mars","Pluto","Venus","Jupiter"],"Pluto"],
 ["Largest Ocean?",["Atlantic","Indian","Pacific","Arctic"],"Pacific"]
 ]},
 {name:"Medium",time:12,questions:[
-["Java creator?",["James Gosling","Bill Gates","Jobs","Linus"],"James Gosling"],
-["Square root of 625?",["20","25","30","35"],"25"],
+["Father of Computer Science?",["James Gosling","Bill Gates","Alan Turing","Linus"],"Alan Turing"],
+["Square root of 676?",["20","25","26","24"],"26"],
 ["CPU stands for?",["Central Processing Unit","Core Power Unit","Computer Process Utility","None"],"Central Processing Unit"],
-["Atomic number of Hydrogen?",["1","2","3","8"],"1"],
+["CEO of Apple(From September 2026)?",["Steve Jobs","Tim Cook","Bill Gates","John Ternus"],"John Ternus"],
+["Statue of Liberty is in?",["UK","Austria","USA","France"],"USA"],
 ["Eiffel Tower is in?",["France","Italy","Germany","Spain"],"France"]
 ]},
 {name:"Hard",time:10,questions:[
@@ -38,7 +39,7 @@ const levels=[
 ["First moon walker?",["Neil Armstrong","Aldrin","Gagarin","Collins"],"Neil Armstrong"],
 ["FIFO structure?",["Stack","Queue","Tree","Graph"],"Queue"],
 ["Binary of 10?",["1010","1001","1111","1100"],"1010"],
-["Relativity proposed by?",["Einstein","Newton","Tesla","Bohr"],"Einstein"]
+["Laws of Motion proposed by?",["Einstein","Newton","Tesla","Bohr"],"Newton"]
 ]}
 ];
 
@@ -94,7 +95,7 @@ if(choice===ans){
 score++;
 streak++;
 if(streak===3){score+=2;}
-beep(800);
+beep(700);
 }else{
 streak=0;
 beep(250);
