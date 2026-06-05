@@ -24,7 +24,8 @@ const levels=[
 ["Square of 24 ?",["9002","1006","678","576"],"576"],
 ["National bird of India?",["Peacock","Crow","Parrot","Eagle"],"Peacock"],
 ["Dwarf Planet?",["Mars","Pluto","Venus","Jupiter"],"Pluto"],
-["Largest Ocean?",["Atlantic","Indian","Pacific","Arctic"],"Pacific"]
+["Largest Ocean?",["Atlantic","Indian","Pacific","Arctic"],"Pacific"],
+["CM of Tamil Nadu?"["C Joseph Vijay","Adityanath Yogi","Rahul Gandhi","Narendra Modi"],"C Joseph Vijay"],
 ]},
 {name:"Medium",time:12,questions:[
 ["Father of Computer Science?",["James Gosling","Bill Gates","Alan Turing","Linus"],"Alan Turing"],
@@ -47,6 +48,10 @@ let level=0,q=0,score=0,streak=0,timeLeft=15,timer;
 
 function shuffle(a){return a.sort(()=>Math.random()-0.5)}
 levels.forEach(l=>shuffle(l.questions));
+  // Show only 5 random questions from each level
+levels.forEach(level => {
+    level.questions = shuffle(level.questions).slice(0, 5);
+});
 
 function beep(f){
 try{
@@ -95,7 +100,7 @@ if(choice===ans){
 score++;
 streak++;
 if(streak===3){score+=2;}
-beep(700);
+beep(200);
 }else{
 streak=0;
 beep(250);
